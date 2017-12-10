@@ -1,5 +1,6 @@
 
 from nanohttp import RestController, json, HttpNotFound
+from restfulpy.orm import DBSession, commit
 
 from yasha.models.issue import Issue
 
@@ -24,3 +25,13 @@ class IssueController(RestController):
             return Issue.query
 
         return self.ensure_issue(issue_id)
+
+    @json
+    @Issue.expose
+    @commit
+    def post(self):
+        issue = Issue()
+        issue.update_from_request()
+        DBSession.add(issue)
+        return issue
+
