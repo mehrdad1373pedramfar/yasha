@@ -1,3 +1,4 @@
+import unittest
 from restfulpy.testing import FormParameter
 
 from yasha.models.issue import Issue
@@ -25,7 +26,6 @@ class IssueTestCase(WebTestCase):
         self.assertIsNotNone(response[1]['id'])
         self.assertIsNotNone(response[2]['id'])
         self.assertIsNotNone(response[3]['id'])
-        self.assertIsNotNone(response[4]['id'])
 
         self.assertEqual(response[0]['title'], 'issue 0')
         self.assertEqual(response[1]['title'], 'issue 1')
@@ -61,7 +61,7 @@ class IssueTestCase(WebTestCase):
 
     def test_post(self):
         response, ___ = self.request(
-            As.user, 'CREATE', self.url,
+            As.user, 'POST', self.url,
             params=[
                 FormParameter('title', 'test issue')
             ]
@@ -70,4 +70,107 @@ class IssueTestCase(WebTestCase):
         self.assertEqual(response['title'], 'test issue')
         self.assertIsNotNone(response['id'])
 
+        self.request(
+            As.user, 'POST', self.url,
+            params=[
+                FormParameter('id', 2)
+            ],
+            expected_status=400
+        )
 
+        self.request(
+            As.user, 'POST', self.url,
+            params=[
+                FormParameter('title1', 'test issue')
+            ],
+            expected_status=400
+        )
+
+        self.request(
+            As.user, 'POST', self.url,
+            expected_status=400
+        )
+
+    def test_put(self):
+        response, ___ = self.request(
+            As.user, 'PUT', f'{self.url}/%(issue_id)s',
+            url_params=dict(
+                issue_id=2
+            ),
+            params=[
+                FormParameter('title', 'updated issue')
+            ]
+        )
+
+        self.assertEqual(response['id'], 2)
+        self.assertEqual(response['title'], 'updated issue')
+
+        self.request(
+            As.user, 'PUT', f'{self.url}/%(issue_id)s',
+            url_params=dict(
+                issue_id=0
+            ),
+            params=[
+                FormParameter('title', 'updated issue')
+            ],
+            expected_status=404
+        )
+
+        self.request(
+            As.user, 'PUT', f'{self.url}/%(issue_id)s',
+            url_params=dict(
+                issue_id=2
+            ),
+            expected_status=400
+        )
+
+        self.request(
+            As.user, 'PUT', f'{self.url}/%(issue_id)s',
+            url_params=dict(
+                issue_id=1
+            ),
+            params=[
+                FormParameter('id', 2)
+            ],
+            expected_status=400
+        )
+
+        self.request(
+            As.user, 'PUT', f'{self.url}/%(issue_id)s',
+            url_params=dict(
+                issue_id=0
+            ),
+            params=[
+                FormParameter('title2', 'test')
+            ],
+            expected_status=400
+        )
+
+    def test_delete(self):
+        response, ___ = self.request(
+            As.user, 'DELETE', f'{self.url}/%(issue_id)s',
+            url_params=dict(
+                issue_id=4
+            )
+        )
+        self.assertEqual(response['id'], 4)
+
+        self.request(
+            As.user, 'GET', f'{self.url}/%(issue_id)s',
+            url_params=dict(
+                issue_id=4
+            ),
+            expected_status=404
+        )
+
+        self.request(
+            As.user, 'DELETE', f'{self.url}/%(issue_id)s',
+            url_params=dict(
+                issue_id=4
+            ),
+            expected_status=404
+        )
+
+
+if __name__ == '__main__':  # pragma: no cover
+    unittest.main()
