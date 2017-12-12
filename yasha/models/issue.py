@@ -8,3 +8,4 @@ class Issue(FilteringMixin, OrderingMixin, PaginationMixin, DeclarativeBase):
     id = Field(Integer, primary_key=True)
 
     title = Field(Unicode(50))
+    description = Field(Unicode(200))

@@ -1,4 +1,3 @@
-
 from nanohttp import RestController, json, HttpNotFound
 from restfulpy.orm import DBSession, commit
 from restfulpy.validation import validate_form
@@ -30,7 +29,7 @@ class IssueController(RestController):
     @json
     @Issue.expose
     @commit
-    @validate_form(blacklist=['id'], requires=['title'])
+    @validate_form(blacklist=['id'], requires=['title', 'description'])
     def post(self):
         issue = Issue()
         issue.update_from_request()
@@ -40,7 +39,7 @@ class IssueController(RestController):
     @json
     @Issue.expose
     @commit
-    @validate_form(blacklist=['id'], requires=['title'])
+    @validate_form(blacklist=['id'], requires=['title', 'description'])
     def put(self, issue_id: int):
         issue = self.ensure_issue(issue_id)
         issue.update_from_request()
@@ -50,7 +49,7 @@ class IssueController(RestController):
     @json
     @Issue.expose
     @commit
-    @validate_form(blacklist=['id', 'title'])
+    @validate_form(blacklist=['id', 'title', 'description'])
     def delete(self, issue_id: int):
         issue = self.ensure_issue(issue_id)
         DBSession.delete(issue)
