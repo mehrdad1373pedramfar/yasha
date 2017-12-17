@@ -4,10 +4,12 @@ from restfulpy.controllers import RootController
 
 import yasha
 from yasha.controllers.issue import IssueController
+from yasha.controllers.work_group import WorkGroupController
 
 
 class ApiV1(RestController):
     issues = IssueController()
+    work_groups = WorkGroupController()
 
     @json
     def version(self):
