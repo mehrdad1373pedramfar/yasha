@@ -39,7 +39,7 @@ class WorkGroupController(RestController):
     @json
     @WorkGroup.expose
     @commit
-    @validate_form(blacklist=['id'])
+    @validate_form(blacklist=['id'], whitelist=['title', 'description', 'priority'])
     def put(self, id: int):
         instance = self._ensure(id)
         instance.update_from_request()

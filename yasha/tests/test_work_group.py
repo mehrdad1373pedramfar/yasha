@@ -4,6 +4,8 @@ from restfulpy.testing import FormParameter
 from yasha.models.work_group import WorkGroup
 from yasha.tests.helpers import WebTestCase, As
 
+not_exist_id = 9999
+
 
 class WorkGroupTestCase(WebTestCase):
     url = '/apiv1/work_groups'
@@ -81,7 +83,7 @@ class WorkGroupTestCase(WebTestCase):
         self.request(
             As.user, 'GET', f'{self.url}/%(work_group_id)s',
             url_params=dict(
-                work_group_id=999
+                work_group_id=not_exist_id
             ),
             expected_status=404
         )
@@ -146,20 +148,11 @@ class WorkGroupTestCase(WebTestCase):
             expected_status=400
         )
 
-        # TODO: what is this test?
-        self.request(
-            As.user, 'POST', self.url,
-            params=[
-                FormParameter('description1', 'test description')
-            ],
-            expected_status=400
-        )
-
+        # no field input
         self.request(
             As.user, 'POST', self.url,
             expected_status=400
         )
-
 
     def test_put(self):
         response, ___ = self.request(
@@ -193,8 +186,8 @@ class WorkGroupTestCase(WebTestCase):
         self.assertEqual(response['description'], 'des 2')
         self.assertEqual(response['priority'], 30002)
 
-"""
-        self.request(
+        #  invalid id
+        response, ___ = self.request(
             As.user, 'PUT', f'{self.url}/%(work_group_id)s',
             url_params=dict(
                 work_group_id=0
@@ -206,15 +199,16 @@ class WorkGroupTestCase(WebTestCase):
             expected_status=404
         )
 
-        self.request(
+        # update with no update field
+        response, ___ = self.request(
             As.user, 'PUT', f'{self.url}/%(work_group_id)s',
             url_params=dict(
                 work_group_id=2
-            ),
-            expected_status=400
+            )
         )
 
-        self.request(
+        # id update is not allowed
+        response, ___ = self.request(
             As.user, 'PUT', f'{self.url}/%(work_group_id)s',
             url_params=dict(
                 work_group_id=1
@@ -225,28 +219,41 @@ class WorkGroupTestCase(WebTestCase):
             expected_status=400
         )
 
-        self.request(
+        response, ___ = self.request(
             As.user, 'PUT', f'{self.url}/%(work_group_id)s',
             url_params=dict(
                 work_group_id=1
             ),
             params=[
-                FormParameter('title', 'test')
-            ],
-            expected_status=400
+                FormParameter('title', 'do not update description')
+            ]
         )
+        self.assertEqual(response['title'], 'do not update description')
 
-        self.request(
+        response, ___ = self.request(
             As.user, 'PUT', f'{self.url}/%(work_group_id)s',
             url_params=dict(
-                work_group_id=1
+                work_group_id=2
             ),
             params=[
-                FormParameter('description', 'test')
-            ],
-            expected_status=400
+                FormParameter('description', 'do not update title')
+            ]
         )
+        self.assertEqual(response['description'], 'do not update title')
 
+        response, ___ = self.request(
+            As.user, 'PUT', f'{self.url}/%(work_group_id)s',
+            url_params=dict(
+                work_group_id=3
+            ),
+            params=[
+                FormParameter('priority', 50003)
+            ]
+        )
+        self.assertEqual(response['priority'], 50003)
+
+
+"""
         self.request(
             As.user, 'PUT', f'{self.url}/%(work_group_id)s',
             url_params=dict(
