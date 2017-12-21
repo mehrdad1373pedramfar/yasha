@@ -170,7 +170,6 @@ class WorkGroupTestCase(WebTestCase):
         self.assertEqual(response['title'], 'updated work_group 2')
         self.assertEqual(response['description'], 'updated description 2')
 
-    def test_put(self):
         response, ___ = self.request(
             As.user, 'PUT', f'{self.url}/%(work_group_id)s',
             url_params=dict(
@@ -180,14 +179,13 @@ class WorkGroupTestCase(WebTestCase):
                 FormParameter('priority', '30002')
             ]
         )
-
         self.assertEqual(response['id'], 3)
         self.assertEqual(response['title'], 'work_group 2')
         self.assertEqual(response['description'], 'des 2')
         self.assertEqual(response['priority'], 30002)
 
         #  invalid id
-        response, ___ = self.request(
+        self.request(
             As.user, 'PUT', f'{self.url}/%(work_group_id)s',
             url_params=dict(
                 work_group_id=0
@@ -200,7 +198,7 @@ class WorkGroupTestCase(WebTestCase):
         )
 
         # update with no update field
-        response, ___ = self.request(
+        self.request(
             As.user, 'PUT', f'{self.url}/%(work_group_id)s',
             url_params=dict(
                 work_group_id=2
@@ -208,7 +206,7 @@ class WorkGroupTestCase(WebTestCase):
         )
 
         # id update is not allowed
-        response, ___ = self.request(
+        self.request(
             As.user, 'PUT', f'{self.url}/%(work_group_id)s',
             url_params=dict(
                 work_group_id=1
@@ -253,18 +251,6 @@ class WorkGroupTestCase(WebTestCase):
         self.assertEqual(response['priority'], 50003)
 
 
-"""
-        self.request(
-            As.user, 'PUT', f'{self.url}/%(work_group_id)s',
-            url_params=dict(
-                work_group_id=0
-            ),
-            params=[
-                FormParameter('title2', 'test')
-            ],
-            expected_status=400
-        )
-
         self.request(
             As.user, 'PUT', f'{self.url}/%(work_group_id)s',
             url_params=dict(
@@ -295,13 +281,13 @@ class WorkGroupTestCase(WebTestCase):
         )
 
         self.request(
-            As.user, 'DELETE', f'{self.url}/%(work_group_id)s',
+            As.user, 'PUT', f'{self.url}/%(work_group_id)s',
             url_params=dict(
                 work_group_id=4
             ),
             expected_status=404
         )
-"""
+
 
 if __name__ == '__main__':  # pragma: no cover
     unittest.main()
