@@ -262,7 +262,6 @@ class WorkGroupTestCase(WebTestCase):
             expected_status=400
         )
 
-
     def test_delete(self):
         response, ___ = self.request(
             As.user, 'DELETE', f'{self.url}/%(work_group_id)s',
@@ -288,6 +287,20 @@ class WorkGroupTestCase(WebTestCase):
             expected_status=404
         )
 
+    def test_add_issue(self):
+        print(11111111111)
+        print(f'{self.url}/2/issues/3')
+        response, ___ = self.request(
+            As.user, 'ADD', f'{self.url}/%(work_group_id)s/issues/%(issue_id)s',
+            url_params=dict(
+                work_group_id=2,
+                issue_id=3
+            )
+        )
+        print(222222222)
+        self.assertEqual(response['id'], 2)
+        print(33333333333)
+        #self.assertEqual(response['issue_id'], 3)
 
 if __name__ == '__main__':  # pragma: no cover
     unittest.main()
