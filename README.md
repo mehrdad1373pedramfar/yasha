@@ -14,8 +14,8 @@ Setting up development Environment on Linux
 
     $ sudo apt-get install python3-pip python3-dev
     $ sudo pip3 install virtualenvwrapper
-    $ echo "export VIRTUALENVWRAPPER_PYTHON=which python3.6" » ~/.bashrc
-    $ echo "alias v.activate=\"source $(which virtualenvwrapper.sh)\"" » ~/.bashrc
+    $ echo "export VIRTUALENVWRAPPER_PYTHON=$(which python3.6)" >> ~/.bashrc
+    $ echo "alias v.activate=\"source $(which virtualenvwrapper.sh)\"" >> ~/.bashrc
     $ source ~/.bashrc
     $ v.activate
     $ mkvirtualenv —python=$(which python3.6) —no-site-packages yasha
@@ -31,20 +31,6 @@ Setting up development Environment on Linux
 ### Installing Project (edit mode)
 
 So, your changes will affect instantly on the installed version
-
-#### nanohttp
-
-    $ cd /path/to/workspace
-    $ git clone git@github.com:pylover/nanohttp.git
-    $ cd nanohttp
-    $ pip install -e .
-    
-#### restfulpy
-    
-    $ cd /path/to/workspace
-    $ git clone git@github.com:pylover/restfulpy.git
-    $ cd restfulpy
-    $ pip install -e .
 
 #### yasha
     
